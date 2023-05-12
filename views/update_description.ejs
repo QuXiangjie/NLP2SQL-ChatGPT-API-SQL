@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>NL2SQL demo 测试 </title>
+  
+  <link rel="stylesheet" href="/stylesheets/update_description.css">
+  <%- include('./partials/header') %>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+  <!-- views/update.ejs -->
+
+  <h1>Update Description and Result</h1>
+  <div class="container">
+      <form class="update-form" action="/update_descriptions" method="POST">
+          <input type="hidden" name="excelId" value="<%= excelId %>">
+          <input type="hidden" name="descriptionIndex" value="<%= descriptionIndex %>">
+          <label for="description" class="form-label">Description:</label>
+          <textarea id="description" name="description" class="form-control"><%= existingDescription %></textarea>
+          <label for="result" class="form-label">Result:</label>
+          <textarea id="result" name="result" class="form-control"><%= existingResult %></textarea>
+          <br>
+          <input type="submit" value="Update" class="btn btn-primary">
+      </form>
+  </div>
+  
+  
+
+  <script>
+    
+  </script>
+</body>
+
+</html>

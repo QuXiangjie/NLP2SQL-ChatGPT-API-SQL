@@ -1,0 +1,56 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-x: auto; /* add this line */
+}
+
+
+.input-file {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.input-file input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
+.input-file .button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-file .button:hover {
+  background-color: #0069d9;
+}
+
+.custom-file-input:focus ~ .custom-file-label {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.list-group-item {
+  background-color: transparent;
+  border: none;
+}
+.list-group-item:last-child {
+  background-color: #f8d7da; /* set background color for newest file */
+  color: #721c24; /* set text color for newest file */
+}

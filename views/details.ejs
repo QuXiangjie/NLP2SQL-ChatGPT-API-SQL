@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Excel Header Results</title>
+  <link rel="stylesheet" href="/stylesheets/details.css">
+  <%- include('./partials/header') %>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="container">
+            <h1 class="text-center">Prompt</h1>
+            <form action="/details?id=<%= id %>" method="POST" class="form-group">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="description" class="form-label">Enter your description:</label>
+                    <textarea id="description" name="description" class="form-control custom-height"
+                      rows="4"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="type" class="form-label">Select the type:</label>
+                    <select id="type" name="type" class="form-control">
+                      <option value="">-- Select a type --</option>
+                      <option value="Type A" data-rows="4">Type A</option>
+                      <option value="Type B" data-rows="6">Type B</option>
+                      <option value="Type C" data-rows="8">Type C</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="presence_penalty" class="form-label">Presence Penalty:</label>
+                    <input type="number" id="presence_penalty" name="presence_penalty" class="form-control" step="0.1"
+                      min="0" max="1" value="0.5">
+                  </div>
+                  <div class="form-group">
+                    <label for="frequency_penalty" class="form-label">Frequency Penalty:</label>
+                    <input type="number" id="frequency_penalty" name="frequency_penalty" class="form-control" step="0.1"
+                      min="0" max="1" value="0.5">
+                  </div>
+                  <div class="form-group">
+                    <label for="temperature" class="form-label">Temperature:</label>
+                    <input type="number" id="temperature" name="temperature" class="form-control" step="0.1" min="0"
+                      max="2" value="0.5">
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+        <div class="col-md-6">
+          <div class="container">
+            <div class="row">
+              <h1>SQL</h1>
+              <ul>
+                <% for(let i=0; i < excel.descriptions.length; i++) { %>
+                  <li>
+                    <strong>Description <%= i+1 %>:</strong><br>
+                    <pre><%= excel.descriptions[i] %></pre><br>
+                    <strong>Result <%= i+1 %>:</strong><br>
+                    <pre><%= excel.results[i] %></pre>
+                    <div class="button-container">
+                      <a href="/delete_descriptions?id=<%= excel._id %>&index=<%= i %>"
+                        class="btn btn-danger mx-1">删除</a>
+                      <a href="/update_descriptions?id=<%= excel._id %>&index=<%= i %>"
+                        class="btn btn-primary mx-1">更新</a>
+
+                    </div>
+                  </li>
+                  <% } %>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <% if (!excel) { %>
+        <p>Error: Excel file not found.</p>
+        <% } else { %>
+          <% for (let sheet of excel.sheets) { %>
+            <div class="sheet-container">
+              <h2 class="sheet-name">
+                <%= sheet.name %>
+              </h2>
+
+              <table class="sheet-table">
+                <thead>
+                  <tr>
+                    <% for (let header of sheet.headers) { %>
+                      <th class="sheet-header">
+                        <%= header %>
+                      </th>
+                      <% } %>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <% for (let i=0; i < sheet.rows.length && i < 5; i++) { %>
+                    <tr>
+                      <% for (let header of sheet.headers) { %>
+                        <td class="sheet-cell">
+                          <%= sheet.rows[i][header] %>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% } %>
+                </tbody>
+              </table>
+            </div>
+            <% } %>
+              <% } %>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+      const sheets = document.querySelectorAll('.sheet-container');
+
+      sheets.forEach((sheet) => {
+        sheet.addEventListener('click', () => {
+          sheet.classList.toggle('active');
+        });
+      });
+      $(document).ready(function () {
+        $('#type').on('change', function () {
+          var rows = $(this).find(':selected').data('rows');
+          $('#description').attr('rows', rows);
+        });
+      });
+
+    </script>
+
+</body>
+
+</html>

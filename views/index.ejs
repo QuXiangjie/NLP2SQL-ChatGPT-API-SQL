@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>NL2SQL demo 测试 </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <%- include('./partials/header') %>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">AI - NL2SQL Assistant</h1>
+
+    <form action="/excel_submit" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="excel_file">Select an Excel file:</label>
+        <div class="custom-file">
+          <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls, .csv" class="custom-file-input" onchange="updateFileNameLabel()">
+          <label class="custom-file-label" for="excel_file" id="file_name_label">Choose file</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit File</button>
+      </div>
+    </form>
+
+    
+<h2 class="mt-5">Uploaded Excel Files:</h2>
+<ul class="list-group mt-3">
+  <% for (let i=0; i < excelFiles.length; i++) { %>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="/details?id=<%= excelFiles[i]._id %>">
+        <%= excelFiles[i].fileName %>
+      </a>
+      <div>
+        <a href="/update_excel?id=<%= excelFiles[i]._id %>" class="btn btn-primary mx-1">更新</a>
+        <a href="/delete_excel?id=<%= excelFiles[i]._id %>" class="btn btn-danger mx-1" >删除</a>
+      </div>
+    </li>
+  <% } %>
+</ul>
+
+
+  </div>
+
+  <script>
+    function updateFileNameLabel() {
+      var fileName = document.getElementById("excel_file").value.split("\\").pop();
+      document.getElementById("file_name_label").innerHTML = fileName;
+    }
+  </script>
+</body>
+
+</html>
