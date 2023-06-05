@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SQL Translator</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/sample.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>SQL Translator</h1>
+        <div class="form-group input-container">
+            <div class="row">
+                <div class="col-md-6">
+                    <textarea id="input" class="input" placeholder="Enter your SQL query...">Retrieve all the customer records from the database where the age of the customers is greater than 30. The results will be sorted in ascending order based on the last name of the customers</textarea>
+                </div>
+                <div class="col-md-6">
+                    <textarea id="output" class="output" placeholder="Result" readonly>SELECT * FROM customers WHERE age > 30 ORDER BY last_name ASC</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="modeToggle">
+                <label class="custom-control-label" for="modeToggle" id="modeLabel">Generate or Explain</label>
+            </div>
+            <button id="actionButton" class="btn btn-primary action-button fade-out">Translate</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/openai/dist/openai.min.js"></script>
+
+    <script>
+         var modeToggle = document.getElementById("modeToggle");
+        document.addEventListener('DOMContentLoaded', function () {
+            var modeToggle = document.getElementById("modeToggle");
+            var actionButton = document.getElementById("actionButton");
+            var input = document.getElementById("input");
+            var output = document.getElementById("output");
+            var nl2sqlprompt="Translate the following natural language query to SQL";
+            var explainprompt="explain the following sql to natural language in Chinese";
+            var prompt="";
+            if (modeToggle.checked) {
+                prompt=explainprompt;
+            } else {
+                prompt=nl2sqlprompt;
+            }
+
+            // Assign the updateInputValue function to the button's click event
+            actionButton.addEventListener('click', updateInputValue);
+
+            async function updateInputValue() {
+                if (modeToggle.checked) {
+                    actionButton.innerHTML = "解释";
+                } else {
+                    // Translate the input text to SQL using OpenAI API
+                    console.log("Creating a response...");
+                    const response = await openai.createChatCompletion({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            { role: "system", content: prompt },
+                            { role: "user", content: input.value }
+                        ],
+                        // Include any additional parameters as needed (e.g., presence_penalty, frequency_penalty, temperature)
+                    });
+
+                    // Extract the translated SQL query from the API response
+                    const translatedSQL = response.choices[0].message.content;
+
+                    // Update the output textarea with the translated SQL query
+                    output.value = translatedSQL;
+                }
+            }
+        });
+
+        // Check the modeToggle status periodically
+        setInterval(checkModeToggle, 500); // Adjust the interval as needed (in milliseconds)
+
+        function checkModeToggle() {
+           
+            var actionButton = document.getElementById("actionButton");
+
+            if (modeToggle.checked) {
+                void actionButton.offsetWidth; // Trigger reflow to restart the transition
+                actionButton.innerHTML = "解释";
+            } else {
+                void actionButton.offsetWidth; // Trigger reflow to restart the transition
+                actionButton.innerHTML = "NL2SQL";
+            }
+        }
+    </script>
+</body>
+
+</html>

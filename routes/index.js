@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 var nlp2sqlcontroller = require("../controllers/nlp2sqlcontrollers")
 
+const DatabaseController = require('../controllers/databasecontroller');
 const excel2sqlcontroller = require('../controllers/excel2sqlcontrollers');
+const SQLQuery=require('../models/SQLQuery')
 //for excel
 const upload = require('multer')();
 //for excel
@@ -12,16 +14,33 @@ const util = require('util');
 
 const ExcelFile = require("../models/ExcelFile")
 
+router.post('/executeQuery', (req, res) => {
+  const excelId = req.query.id; // Extract the excelId from the query parameters
+  console.log("this is exceID+",excelId)
+  DatabaseController.executeQuery(req, res, excelId);
+});
+
 
 //get the one excel page
 router.post('/excel_submit', upload.single('excel_file'), excel2sqlcontroller.getExcelHeader);
 
 
 //get all
-router.get('/', async (req, res) => {
+
+router.get("/", (req, res) => {
+  res.render("login");
+});
+
+router.post('/login?', (req, res) => {
+  console.log("1");
+  DatabaseController.login(req, res);
+
+});
+
+router.get('/menu', async (req, res) => {
   const excelFiles = await ExcelFile.find({}, 'fileName');
   // render the file submited
-  res.render('index', { excelFiles });
+  res.render('sample', { excelFiles });
 });
 
 //details of excel file
@@ -37,7 +56,7 @@ router.post('/details', function (req, res) {
 
 router.post('/prompt_submit', function (req, res, next) {
   const idinexcelpage = req.query.id;
- 
+
   nlp2sqlcontroller.prompt_post(req, res);
 })
 router.get('/update_excel?:id', async (req, res) => {
@@ -63,9 +82,9 @@ router.get('/delete_descriptions', excel2sqlcontroller.delete_descriptions)
 
 router.get('/update_descriptions', async function (req, res, next) {
   try {
-    
+
     const excelId = req.query.id; // ID of the ExcelFile document
-    
+
     const descriptionIndex = parseInt(req.query.index, 10) || 0; // Index of the description to be updated (parsed as integer from query parameter)
 
     // Find the ExcelFile document by ID
@@ -76,11 +95,11 @@ router.get('/update_descriptions', async function (req, res, next) {
     const existingResult = excelFile.results[descriptionIndex];
 
     // Render the update_description template with the existing values
-    res.render('update_description', { 
-      excelId: excelId, 
+    res.render('update_description', {
+      excelId: excelId,
       descriptionIndex: descriptionIndex,
       existingDescription: existingDescription,
-      existingResult: existingResult 
+      existingResult: existingResult
     });
 
   } catch (err) {
@@ -112,6 +131,31 @@ router.post('/update_descriptions', async function (req, res, next) {
     next(err);
   }
 });
+router.get('/queries/:id/rowdetail', async (req, res) => {
+  const queryId = req.params.id;
+  console.log("this is the queryId");
+  console.log(queryId);
+
+  try {
+    const query = await SQLQuery.findById(queryId);
+    const rows = query.rows;
+
+    console.log("this is the query");
+    console.log(query.query);
+    console.log("these are the rows");
+    console.log(rows);
+
+    res.render('rowdetail', { query, rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error retrieving query results' });
+  }
+});
+
+
+
+
+
 
 
 

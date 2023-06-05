@@ -2,6 +2,7 @@ const xlsx = require('xlsx');
 const nlp2sqlcontrollers = require('./nlp2sqlcontrollers');
 const mongoose = require('mongoose');
 const ExcelFile = require("../models/ExcelFile")
+const SQLQuery = require("../models/SQLQuery");
 
 exports.getExcelHeader = async (req, res) => {
   const file = req.file;
@@ -40,7 +41,7 @@ exports.getExcelHeader = async (req, res) => {
 
 
 
-    sheets.push({ name: sheetName, headers: headers, rows: rows });
+    sheets.push({ name: sheetName, headers: headers, rows: rows});
   }
   // save the excel file info in MongoDB
   const excelFile = new ExcelFile({
@@ -58,14 +59,33 @@ exports.getExcelpage_get = async function (req, res, excelId) {
   if (!excelId) {
     return res.status(400).send('No Excel file ID provided.');
   }
-  const excel = await ExcelFile.findOne({ _id: excelId });
 
-  if (!excel) {
-    return res.status(404).send('Excel file not found.');
+  try {
+    const excel = await ExcelFile.findOne({ _id: excelId });
+    
+    if (!excel) {
+      return res.status(404).send('Excel file not found.');
+    }
+
+    const queries = await SQLQuery.find({});
+    queries.forEach(query => {
+      console.log(query.rows); // Access the 'rows' property for each query
+    });
+    console.log("this is the excelid");
+    
+
+    res.render('details', { 
+      fileName: excel.fileName,
+      excel: excel,
+      id: excelId,
+      queries: queries
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error.');
   }
-  res.render('details', { fileName: excel.fileName, excel: excel, id: excelId });
-
 }
+
 
 
 exports.getExcelpage_post = async function (req, res) {

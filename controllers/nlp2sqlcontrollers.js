@@ -27,7 +27,7 @@ exports.prompt_post = async function (req, res) {
   const frequencyPenalty = req.body.frequency_penalty || 0.5;
   const temperature = req.body.temperature || 0.5;
 
-  console.log(req.body.presence_penalty)
+  
 
   const response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
@@ -39,7 +39,7 @@ exports.prompt_post = async function (req, res) {
 
 
   let result = response.data.choices[0].message.content;
-  console.log(result)
+  
 
   // Add the result and description to the ExcelFile document
   excel.descriptions.push(description);
