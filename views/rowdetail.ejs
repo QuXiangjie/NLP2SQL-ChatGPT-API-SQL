@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Excel Header Results</title>
+  <link rel="stylesheet" href="/stylesheets/rowdetails.css">
+  <% include('./partials/header') %>
+</head>
+<body>
+  <% include('./partials/nav') %>
+
+  <h1>Query: <%= query.query %></h1>
+
+  <h2>Rows:</h2>
+  <table>
+        <thead>
+          <tr>
+            <% if (rows && rows.length > 0) {
+              const keys = Object.keys(rows[0]);
+              keys.forEach((key) => { %>
+                <% if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) { %>
+                  <th><%= key %></th>
+                <% } %>
+              <% });
+            } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (rows && rows.length > 0) {
+            rows.forEach((row) => { %>
+              <tr>
+                <% const rowKeys = Object.keys(row);
+                rowKeys.forEach((key) => { %>
+                  <% if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) { %>
+                    <td><%= row[key] %></td>
+                  <% } %>
+                <% });
+              %>
+              </tr>
+            <% });
+          } %>
+        </tbody>
+      </table>
+      
+
+  <script src=""></script>
+</body>
+</html>

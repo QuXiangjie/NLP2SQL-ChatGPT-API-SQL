@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>NL2SQL demo 测试</title>
+  <link rel="stylesheet" href="/stylesheets/menu.css" />
+  <link rel="stylesheet" href="/stylesheets/nav.css" />
+  <%- include('./partials/header') %>
+  <style>
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .video-background video {
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-form {
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .login-form h1 {
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('./partials/nav') %>
+
+  <div class="video-background">
+    <video autoplay loop muted>
+      <source src="/AI.mp4" type="video/mp4">
+      <!-- 添加其他视频源（如.webm 或 .ogg 格式） -->
+    </video>
+  </div>
+
+  <div class="container my-5">
+    <h1 class="text-center mb-4 video-title">高校教学数据智能分析平台设计与开发</h1>
+    <h3 class="text-center mb-4 video-title">开发者：屈湘杰</h3>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+              <div class="login-form background-color">
+                <br>
+                
+
+                <form id="login-form" action="/menu" method="POST">
+                  <div class="mb-3">
+                    <label for="servername" class="form-label">服务器名:</label>
+                    <input type="text" class="form-control" id="servername" name="servername" required value="DESKTOP-PB1U80G\SQLEXPRESS">
+                  </div>
+                  <div class="mb-3">
+                    <label for="database" class="form-label">数据库选择:</label>
+                    <input type="text" class="form-control" id="database" name="database" required value="OpenUniversity">
+                  </div>
+                  <div class="mb-3">
+                    <label for="uid" class="form-label">用户名:</label>
+                    <input type="text" class="form-control" id="uid" name="uid" required value="professor1">
+                  </div>
+                  <div class="mb-3">
+                    <label for="pwd" class="form-label">密码:</label>
+                    <input type="password" class="form-control" id="pwd" name="pwd" required value="professor1">
+                  </div>
+                  <div class="mb-3">
+                    <!-- <button type="submit" class="btn btn-primary">连接数据库访问</button> -->
+                    <a href="/menu" class="btn btn-primary">连接数据库访问</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 background-color">
+          <div class="card text-center mb-3 custom-card">
+            <div class="card-body">
+              <h1 class="card-title">项目介绍</h1>
+              <p class="card-text">利用ChatGPT-3.5-Turbo大语言模型、MERN技术堆栈设计与开发在线的高校教学数据智能分析平台。该平台可通过教师的自然语言转换为结构化查询语言（SQL），实现教师与校园或线上教育平台数据库的交互，提供数据支持和决策依据。</p>
+              <p class="features-heading">目的：</p>
+              <ul class="features-list">
+                <li>降低数据分析门槛</li>
+                <li>提高数据的访问能力</li>
+              </ul>
+              <a href="/menu" class="btn btn-primary">数据文件访问</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/scripts/main.js"></script>
+</body>
+
+</html>
