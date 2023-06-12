@@ -26,11 +26,36 @@
                 <input type="checkbox" class="custom-control-input" id="modeToggle">
                 <label class="custom-control-label" for="modeToggle" id="modeLabel">Generate or Explain</label>
             </div>
-            <button id="actionButton" class="btn btn-primary action-button fade-out">Translate</button>
+            <!-- <button id="actionButton" class="btn btn-primary action-button fade-out">Translate</button> -->
         </div>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modeToggle = document.getElementById("modeToggle");
+            var inputTextarea = document.getElementById("input");
+            var outputTextarea = document.getElementById("output");
+            var modeLabel = document.getElementById("modeLabel");
+
+            modeToggle.addEventListener('click', function () {
+                if (modeToggle.checked) {
+                    // Swap the content of the textareas
+                    var temp = inputTextarea.value;
+                    inputTextarea.value = outputTextarea.value;
+                    outputTextarea.value = temp;
+                    // Update the mode label
+                    modeLabel.innerHTML = "Explain";
+                } else {
+                    // Swap the content of the textareas
+                    var temp = outputTextarea.value;
+                    outputTextarea.value = inputTextarea.value;
+                    inputTextarea.value = temp;
+                    // Update the mode label
+                    modeLabel.innerHTML = "Generate or Explain";
+                }
+            });
+        });
+
         var modeToggle = document.getElementById("modeToggle");
         document.addEventListener('DOMContentLoaded', function () {
             var modeToggle = document.getElementById("modeToggle");
@@ -106,6 +131,7 @@
             }
         });
     </script>
+
 </body>
 
 </html>

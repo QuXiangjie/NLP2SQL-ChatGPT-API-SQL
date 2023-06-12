@@ -41,13 +41,12 @@ router.post('/login?', (req, res) => {
 router.get('/menu', async (req, res) => {
   const excelFiles = await ExcelFile.find({}, 'fileName');
   // render the file submited
-  res.render('sample', { excelFiles });
+  res.render('index', { excelFiles });
 });
 
 //details of excel file
 router.get('/details', (req, res) => {
   const id = req.query.id;
-
   excel2sqlcontroller.getExcelpage_get(req, res, id);
 });
 router.post('/details', function (req, res) {
@@ -94,13 +93,18 @@ router.get('/update_descriptions', async function (req, res, next) {
     // Get the existing description and result values
     const existingDescription = excelFile.descriptions[descriptionIndex];
     const existingResult = excelFile.results[descriptionIndex];
+    const queries = await SQLQuery.find({});
+    queries.forEach(query => {
+      console.log(query.rows); // Access the 'rows' property for each query
+    });
 
     // Render the update_description template with the existing values
     res.render('update_description', {
       excelId: excelId,
       descriptionIndex: descriptionIndex,
       existingDescription: existingDescription,
-      existingResult: existingResult
+      existingResult: existingResult,
+      queries:queries
     });
 
   } catch (err) {
@@ -132,6 +136,9 @@ router.post('/update_descriptions', async function (req, res, next) {
     next(err);
   }
 });
+
+const ExcelJS = require('exceljs');
+
 router.get('/queries/:id/rowdetail', async (req, res) => {
   const queryId = req.params.id;
   console.log("this is the queryId");
@@ -152,6 +159,59 @@ router.get('/queries/:id/rowdetail', async (req, res) => {
     res.status(500).json({ error: 'Error retrieving query results' });
   }
 });
+
+router.get('/downloadQueryRows/:id', async (req, res) => {
+  const queryId = req.params.id;
+
+  try {
+    const query = await SQLQuery.findById(queryId);
+    console.log(query)
+    const rows = query.rows;
+    console.log(rows)
+    // Create a new workbook
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Query Results');
+
+    // Add the headers
+    if (rows && rows.length > 0) {
+      const keys = Object.keys(rows[0]);
+      keys.forEach((key) => {
+        if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) {
+          worksheet.getCell(`${String.fromCharCode(65 + keys.indexOf(key))}1`).value = key;
+        }
+      });
+    }
+
+    // Add the rows
+    if (rows && rows.length > 0) {
+      rows.forEach((row, rowIndex) => {
+        const rowKeys = Object.keys(row);
+        rowKeys.forEach((key, keyIndex) => {
+          if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) {
+            worksheet.getCell(`${String.fromCharCode(65 + keyIndex)}${rowIndex + 2}`).value = row[key];
+          }
+        });
+      });
+    }
+
+    // Generate a unique filename for the Excel file
+    const fileName = `QueryResults_${queryId}.xlsx`;
+
+    // Set the response headers for downloading the file
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+
+    // Save the workbook and send it as the response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error generating Excel file' });
+  }
+});
+
+
+
 
 const { Configuration, OpenAIApi } = require("openai");
 router.post('/translate', async (req, res) => {
@@ -179,15 +239,5 @@ router.post('/translate', async (req, res) => {
     res.status(500).json({ error: "Translation failed" });
   }
 });
-
-
-
-
-
-
-
-
-
-
 
 module.exports = router;

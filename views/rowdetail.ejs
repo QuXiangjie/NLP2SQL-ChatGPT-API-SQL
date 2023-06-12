@@ -1,47 +1,70 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Excel Header Results</title>
-  <link rel="stylesheet" href="/stylesheets/rowdetails.css">
-  <% include('./partials/header') %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/nav.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/rowdetails.css">
+  <%- include('./partials/header') %>
 </head>
+
 <body>
-  <% include('./partials/nav') %>
+  <%- include('./partials/nav') %>
+    <div class="container">
+      
+        <a href="/downloadQueryRows/<%= query._id %>" class="btn btn-primary">下载查询结果</a>
+      
 
-  <h1>Query: <%= query.query %></h1>
 
-  <h2>Rows:</h2>
-  <table>
-        <thead>
+      <h1>查询:
+        <%= query.query %>
+      </h1>
+      <p>已为您查询到如下结果，结果显示在此页面，您也可以通过点击“下载查询结果”按钮对数据进行下载</p>
+
+      <h2>结果:</h2>
+      <table class="table">
+        <thead class="thead-dark">
           <tr>
             <% if (rows && rows.length > 0) {
-              const keys = Object.keys(rows[0]);
-              keys.forEach((key) => { %>
-                <% if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) { %>
-                  <th><%= key %></th>
-                <% } %>
-              <% });
-            } %>
+            const keys = Object.keys(rows[0]);
+            keys.forEach((key) => {
+              if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) { %>
+              <th scope="col">
+                <%= key %>
+              </th>
+              <% }
+            });
+          } %>
           </tr>
         </thead>
         <tbody>
           <% if (rows && rows.length > 0) {
-            rows.forEach((row) => { %>
-              <tr>
-                <% const rowKeys = Object.keys(row);
-                rowKeys.forEach((key) => { %>
-                  <% if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) { %>
-                    <td><%= row[key] %></td>
-                  <% } %>
-                <% });
+          rows.forEach((row) => { %>
+            <tr>
+              <% const rowKeys = Object.keys(row);
+              rowKeys.forEach((key) => {
+                if (key !== '_doc' && !key.startsWith('__') && !key.startsWith('$')) { %>
+                <td>
+                  <%= row[key] %>
+                </td>
+                <% }
+              });
               %>
-              </tr>
+            </tr>
             <% });
-          } %>
+        } %>
         </tbody>
       </table>
-      
 
-  <script src=""></script>
+
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

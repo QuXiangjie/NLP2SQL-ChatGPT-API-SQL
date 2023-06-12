@@ -2,8 +2,9 @@
 <html>
 
 <head>
-  <title>Excel Header Results</title>
-  <link rel="stylesheet" href="/stylesheets/details.css">
+  <title>Excel 头部结果</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/details.css">
+
   <%- include('./partials/header') %>
 </head>
 
@@ -11,114 +12,105 @@
   <%- include('./partials/nav') %>
     <div class="container">
       <div class="row">
-
         <div class="col-md-6">
           <div class="container">
-            <h1 class="text-center">Prompt</h1>
+
             <form action="/details?id=<%= id %>" method="POST" class="form-group">
               <div class="row justify-content-center">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="description" class="form-label">Enter your description:</label>
-                    <textarea id="description" name="description" class="form-control custom-height" rows="4"></textarea>
-                  </div>
-                </div>
-              </div>
-              <div class="row justify-content-center">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="type" class="form-label">Select the type:</label>
-                    <select id="type" name="type" class="form-control">
-                      <option value="">-- Select a type --</option>
-                      <option value="Type A" data-rows="4">Type A</option>
-                      <option value="Type B" data-rows="6">Type B</option>
-                      <option value="Type C" data-rows="8">Type C</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="row justify-content-center">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="presence_penalty" class="form-label">Presence Penalty:</label>
-                    <input type="number" id="presence_penalty" name="presence_penalty" class="form-control" step="0.1" min="0" max="1" value="0.5">
-                  </div>
-                  <div class="form-group">
-                    <label for="frequency_penalty" class="form-label">Frequency Penalty:</label>
-                    <input type="number" id="frequency_penalty" name="frequency_penalty" class="form-control" step="0.1" min="0" max="1" value="0.5">
-                  </div>
-                  <div class="form-group">
-                    <label for="temperature" class="form-label">Temperature:</label>
-                    <input type="number" id="temperature" name="temperature" class="form-control" step="0.1" min="0" max="2" value="0.5">
-                  </div>
-                  <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                <div class="col-md-8">
+                  <div class="card p-4 shadow">
+                    <div class="form-group">
+                      <label for="description" class="form-label">请输入描述：</label>
+                      <textarea id="description" name="description" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="type" class="form-label">选择类型：</label>
+                      <select id="type" name="type" class="form-control">
+                        <option value="">-- 选择类型 --</option>
+                        <option value="Type A" data-rows="4">类型 A</option>
+                        <option value="Type B" data-rows="6">类型 B</option>
+                        <option value="Type C" data-rows="8">类型 C</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="presence_penalty" class="form-label">存在惩罚：</label>
+                      <input type="number" id="presence_penalty" name="presence_penalty" class="form-control" step="0.1" min="0" max="1" value="0.5">
+                    </div>
+                    <div class="form-group">
+                      <label for="frequency_penalty" class="form-label">频率惩罚：</label>
+                      <input type="number" id="frequency_penalty" name="frequency_penalty" class="form-control" step="0.1" min="0" max="1" value="0.5">
+                    </div>
+                    <div class="form-group">
+                      <label for="temperature" class="form-label">温度：</label>
+                      <input type="number" id="temperature" name="temperature" class="form-control" step="0.1" min="0" max="2" value="0.5">
+                    </div>
+                    <div class="form-group text-center">
+                      <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </form>
-          </div>
-          <div class="container">
-            <div class="form-container">
-              <h1>SQL Query</h1>
-
-              <div class="col-md-6">
-                <form action="/executeQuery?id=<%= id %>" method="post">
-
-                  <div class="form-group">
-                    <label for="sql-query">Enter your SQL query:</label>
-                    <input type="text" id="sql-query" name="sqlQuery" class="form-control" placeholder="Enter your SQL query" required>
+            <div class="container form-container">
+                <h1 class="text-center">SQL 查询</h1>
+                <div class="row justify-content-center">
+                  <div class="col-md-6">
+                    <form action="/executeQuery?id=<%= id %>" method="post">
+                      <div class="card p-4 shadow">
+                        <div class="form-group">
+                          <label for="sql-query">请输入您的 SQL 查询：</label>
+                          <input type="text" id="sql-query" name="sqlQuery" class="form-control" placeholder="请输入您的 SQL 查询" required>
+                        </div>
+                        <div class="form-group text-center">
+                          <button type="submit" class="btn btn-primary btn-block">执行查询</button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                  <button type="submit" class="btn btn-primary btn-block">Execute Query</button>
-                </form>
+                </div>
               </div>
-
-
-            </div>
           </div>
 
           <div class="container result-container">
-            <h2>SQL Query Result:</h2>
-            <div id="sql-result">
-              <% queries.forEach(function(query) { %>
-                <a href="#" onclick="displayRows('<%= query._id %>')">
-                  <%= query.query %>
-                </a>
+              <h2>SQL 查询结果：</h2>
+              <ul id="sql-result">
+                <% queries.forEach(function(query) { %>
+                  <li>
+                    <a href="#" onclick="displayRows('<%= query._id %>')">
+                      <%= query.query %>
+                    </a>
+                  </li>
                 <% }); %>
+              </ul>
             </div>
-          </div>
-
-
-
-
-
-
-
+            
         </div>
         <div class="col-md-6">
           <div class="container">
             <div class="row">
-              <h1>SQL</h1>
-              <ul>
-                <% for(let i=0; i < excel.descriptions.length; i++) { %>
-                  <li>
-                    <strong>Description
-                      <%= i+1 %>:</strong>
-                    <br>
-                    <pre><%= excel.descriptions[i] %></pre>
-                    <br>
-                    <strong>Result
-                      <%= i+1 %>:</strong>
-                    <br>
-                    <pre><%= excel.results[i] %></pre>
-                    <div class="button-container">
-                      <a href="/delete_descriptions?id=<%= excel._id %>&index=<%= i %>" class="btn btn-danger mx-1">删除</a>
-                      <a href="/update_descriptions?id=<%= excel._id %>&index=<%= i %>" class="btn btn-primary mx-1">更新</a>
+              <div class="text-center">
+                  <h1>NL2SQL 查询以及结果</h1>
+              </div>
+              
+              <h3>点击每一条查询，即可显示翻译结果</h3>
+              <% for(let i = 0; i < excel.descriptions.length; i++) { %>
+                <div class="description-result">
+                  <h4 class="description-heading" data-toggle="result">
+                    <%= i + 1 %>. 描述：
+                      <%= excel.descriptions[i] %>
+                  </h4>
+                  <pre class="description"><%= excel.descriptions[i] %></pre>
+                  <h4 class="result-heading" style="display: none;">
+                    <%= i + 1 %>. 结果：</h4>
+                  <pre class="result" style="display: none;"><%= excel.results[i] %></pre>
+                  <div class="button-container" style="display: none;">
+                    <!-- Add inline style to initially hide the button container -->
+                    <a href="/delete_descriptions?id=<%= excel._id %>&index=<%= i %>" class="btn btn-danger mx-1">删除</a>
+                    <a href="/update_descriptions?id=<%= excel._id %>&index=<%= i %>" class="btn btn-primary mx-1">更新</a>
+                  </div>
+                </div>
 
-                    </div>
-                  </li>
-                  <% } %>
-              </ul>
+                <% } %>
             </div>
           </div>
 
@@ -127,14 +119,13 @@
     </div>
     <div class="container">
       <% if (!excel) { %>
-        <p>Error: Excel file not found.</p>
+        <p>错误：找不到 Excel 文件。</p>
         <% } else { %>
           <% for (let sheet of excel.sheets) { %>
             <div class="sheet-container">
               <h2 class="sheet-name">
                 <%= sheet.name %>
               </h2>
-
               <table class="sheet-table">
                 <thead>
                   <tr>
@@ -145,7 +136,6 @@
                       <% } %>
                   </tr>
                 </thead>
-
                 <tbody>
                   <% for (let i=0; i < sheet.rows.length && i < 5; i++) { %>
                     <tr>
@@ -162,34 +152,36 @@
             <% } %>
               <% } %>
     </div>
-
-
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
     <script>
       const sheets = document.querySelectorAll('.sheet-container');
-
       sheets.forEach((sheet) => {
         sheet.addEventListener('click', () => {
           sheet.classList.toggle('active');
         });
       });
-
       $(document).ready(function () {
         $('#type').on('change', function () {
           var rows = $(this).find(':selected').data('rows');
           $('#description').attr('rows', rows);
         });
       });
-
       function displayRows(queryId) {
         // Redirect the user to the rowdetail page
         window.location.href = `/queries/${queryId}/rowdetail`;
       }
-
-
     </script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $(".result").hide(); // 初始隐藏所有结果
+        $(".description-result").click(function () {
+          $(this).find(".description").toggleClass("expanded"); // 点击时添加或移除 "expanded" 类
+          $(this).find(".result").slideToggle("slow", function () {
+            $(this).siblings(".button-container").toggle(); // 切换按钮容器的可见性
+          });
+        });
+      });
+    </script>
 </body>
-
 </html>

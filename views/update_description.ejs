@@ -1,36 +1,28 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>NL2SQL demo 测试 </title>
-  
+  <title>NL2SQL 演示测试</title>
   <link rel="stylesheet" href="/stylesheets/update_description.css">
   <%- include('./partials/header') %>
 </head>
-
 <body>
   <%- include('./partials/nav') %>
   <!-- views/update.ejs -->
-
-  <h1>Update Description and Result</h1>
+  <h1>更新描述和结果</h1>
   <div class="container">
       <form class="update-form" action="/update_descriptions" method="POST">
           <input type="hidden" name="excelId" value="<%= excelId %>">
           <input type="hidden" name="descriptionIndex" value="<%= descriptionIndex %>">
-          <label for="description" class="form-label">Description:</label>
+          <label for="description" class="form-label">描述：</label>
           <textarea id="description" name="description" class="form-control"><%= existingDescription %></textarea>
-          <label for="result" class="form-label">Result:</label>
+          <label for="result" class="form-label">结果：</label>
           <textarea id="result" name="result" class="form-control"><%= existingResult %></textarea>
           <br>
-          <input type="submit" value="Update" class="btn btn-primary">
+          <input type="submit" value="更新" class="btn btn-primary">
       </form>
   </div>
-  
-  
-
   <script>
     
   </script>
 </body>
-
 </html>

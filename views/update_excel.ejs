@@ -2,76 +2,71 @@
 <html>
 
 <head>
-  <title>NL2SQL demo 测试 </title>
-  
+  <title>NL2SQL 测试示例</title>
   <link rel="stylesheet" href="/stylesheets/details.css">
   <%- include('./partials/header') %>
 </head>
 
 <body>
   <%- include('./partials/nav') %>
-  <div class="container my-5">
-    <h1 class="text-center mb-4">AI - NL2SQL Assistant</h1>
-
-    <form action="/update_excel/<%= excelId %>" method="POST" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="excel_file">Select an Excel file:</label>
-        <div class="custom-file">
-          <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls, .csv" class="custom-file-input" onchange="updateFileNameLabel()">
-          <label class="custom-file-label" for="excel_file" id="file_name_label">Choose file</label>
+    <div class="container my-5">
+      <h1 class="text-center mb-4">AI - NL2SQL 助手</h1>
+      <form action="/update_excel/<%= excelId %>" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="excel_file">选择一个 Excel 文件：</label>
+          <div class="custom-file">
+            <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls, .csv" class="custom-file-input" onchange="updateFileNameLabel()">
+            <label class="custom-file-label" for="excel_file" id="file_name_label">选择文件</label>
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit File</button>
-      </div>
-    </form>
-  </div>
-  <div class="container">
-    <% if (!excel) { %>
-      <p>Error: Excel file not found.</p>
-      <% } else { %>
-        <% for (let sheet of excel.sheets) { %>
-          <div class="sheet-container">
-            <h2 class="sheet-name">
-              <%= sheet.name %>
-            </h2>
-
-            <table class="sheet-table">
-              <thead>
-                <tr>
-                  <% for (let header of sheet.headers) { %>
-                    <th class="sheet-header">
-                      <%= header %>
-                    </th>
-                    <% } %>
-                </tr>
-              </thead>
-
-              <tbody>
-                <% for (let i=0; i < sheet.rows.length && i < 5; i++) { %>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">提交文件</button>
+        </div>
+      </form>
+    </div>
+    <div class="container">
+      <% if (!excel) { %>
+        <p>错误：未找到 Excel 文件。</p>
+        <% } else { %>
+          <% for (let sheet of excel.sheets) { %>
+            <div class="sheet-container">
+              <h2 class="sheet-name">
+                <%= sheet.name %>
+              </h2>
+              <table class="sheet-table">
+                <thead>
                   <tr>
                     <% for (let header of sheet.headers) { %>
-                      <td class="sheet-cell">
-                        <%= sheet.rows[i][header] %>
-                      </td>
+                      <th class="sheet-header">
+                        <%= header %>
+                      </th>
                       <% } %>
                   </tr>
-                  <% } %>
-              </tbody>
-            </table>
-          </div>
-          <% } %>
+                </thead>
+
+                <tbody>
+                  <% for (let i=0; i < sheet.rows.length && i < 5; i++) { %>
+                    <tr>
+                      <% for (let header of sheet.headers) { %>
+                        <td class="sheet-cell">
+                          <%= sheet.rows[i][header] %>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% } %>
+                </tbody>
+              </table>
+            </div>
             <% } %>
-  </div>
-
-
-  <script>
-    function updateFileNameLabel() {
-      var fileName = document.getElementById("excel_file").value.split("\\").pop();
-      document.getElementById("file_name_label").innerHTML = fileName;
-    }
-  </script>
+              <% } %>
+    </div>
+    <script>
+      function updateFileNameLabel() {
+        var fileName = document.getElementById("excel_file").value.split("\\").pop();
+        document.getElementById("file_name_label").innerHTML = fileName;
+      }
+    </script>
 </body>
 
 </html>

@@ -2,55 +2,169 @@
 <html>
 
 <head>
-  <title>NL2SQL demo 测试 </title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <%- include('./partials/header') %>
+    <title>NL2SQL演示测试</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/sample.css">
+    <!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <%- include('./partials/header') %>
+
 </head>
 
 <body>
-  <%- include('./partials/nav') %>
-  <div class="container my-5">
-   
-
-    <form action="/excel_submit" method="POST" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="excel_file">Select an Excel file:</label>
-        <div class="custom-file">
-          <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls, .csv" class="custom-file-input" onchange="updateFileNameLabel()">
-          <label class="custom-file-label" for="excel_file" id="file_name_label">Choose file</label>
+    <%- include('./partials/nav') %>
+        <div class="container">
+            <div class="form-group">
+                <h1>SQL翻译示例</h1>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="modeToggle">
+                    <label class="custom-control-label" for="modeToggle" id="modeLabel">生成或解释</label>
+                </div>
+                <!-- <button id="actionButton" class="btn btn-primary action-button fade-out">翻译</button> -->
+            </div>
+            <div class="form-group input-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <textarea id="input" class="input" placeholder="输入你的SQL查询...">从数据库中检索年龄大于30的所有客户记录。结果将按照客户的姓氏升序排列</textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <textarea id="output" class="output" placeholder="结果" readonly>SELECT * FROM customers WHERE age > 30 ORDER BY last_name ASC</textarea>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="container my-5">
+            <form action="/excel_submit" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
 
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit File</button>
-      </div>
-    </form>
+                    <div class="custom-file">
+                        <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls, .csv" class="custom-file-input" onchange="updateFileNameLabel()">
+                        <label class="custom-file-label" for="excel_file" id="file_name_label">选择文件</label>
+                    </div>
+                </div>
 
-    
-<h2 class="mt-5">Uploaded Excel Files:</h2>
-<ul class="list-group mt-3">
-  <% for (let i=0; i < excelFiles.length; i++) { %>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <a href="/details?id=<%= excelFiles[i]._id %>">
-        <%= excelFiles[i].fileName %>
-      </a>
-      <div>
-        <a href="/update_excel?id=<%= excelFiles[i]._id %>" class="btn btn-primary mx-1">更新</a>
-        <a href="/delete_excel?id=<%= excelFiles[i]._id %>" class="btn btn-danger mx-1" >删除</a>
-      </div>
-    </li>
-  <% } %>
-</ul>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">提交文件</button>
+                </div>
+            </form>
+            <ul class="list-group mt-3">
+                <% for (let i=0; i < excelFiles.length; i++) { %>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="/details?id=<%= excelFiles[i]._id %>">
+                            <%= excelFiles[i].fileName %>
+                        </a>
+                        <div>
+                            <a href="/update_excel?id=<%= excelFiles[i]._id %>" class="btn btn-primary mx-1">更新</a>
+                            <a href="/delete_excel?id=<%= excelFiles[i]._id %>" class="btn btn-danger mx-1">删除</a>
+                        </div>
+                    </li>
+                    <% } %>
+            </ul>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var modeToggle = document.getElementById("modeToggle");
+                var inputTextarea = document.getElementById("input");
+                var outputTextarea = document.getElementById("output");
+                var modeLabel = document.getElementById("modeLabel"); modeToggle.addEventListener('click', function () {
+                    if (modeToggle.checked) {
+                        // 交换文本区域的内容
+                        var temp = inputTextarea.value;
+                        inputTextarea.value = outputTextarea.value;
+                        outputTextarea.value = temp;
+                        // 更新模式标签
+                        modeLabel.innerHTML = "解释";
+                    } else {
+                        // 交换文本区域的内容
+                        var temp = outputTextarea.value;
+                        outputTextarea.value = inputTextarea.value;
+                        inputTextarea.value = temp;
+                        // 更新模式标签
+                        modeLabel.innerHTML = "生成";
+                    }
+                });
+            });
 
+            var modeToggle = document.getElementById("modeToggle");
+            document.addEventListener('DOMContentLoaded', function () {
+                var modeToggle = document.getElementById("modeToggle");
+                var actionButton = document.getElementById("actionButton");
+                var input = document.getElementById("input");
+                var output = document.getElementById("output");
+                var nl2sqlprompt = "将以下自然语言查询翻译为SQL";
+                var explainprompt = "解释以下SQL为中文的自然语言";
+                var prompt = "";
+                if (modeToggle.checked) {
+                    prompt = explainprompt;
+                } else {
+                    prompt = nl2sqlprompt;
+                }
 
-  </div>
+                // 将updateInputValue函数分配给按钮的点击事件
+                actionButton.addEventListener('click', updateInputValue);
 
-  <script>
-    function updateFileNameLabel() {
-      var fileName = document.getElementById("excel_file").value.split("\\").pop();
-      document.getElementById("file_name_label").innerHTML = fileName;
-    }
-  </script>
+                async function fetchTranslation(prompt, userInput) {
+                    try {
+                        const response = await fetch('/translate', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                prompt: prompt,
+                                userInput: userInput
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('请求失败');
+                        }
+
+                        const data = await response.json();
+                        return data.translatedSQL;
+                    } catch (error) {
+                        console.error(error);
+                        // 处理错误情况
+                        return null;
+                    }
+                }
+
+                async function updateInputValue() {
+                    if (modeToggle.checked) {
+                        actionButton.innerHTML = "解释";
+                    } else {
+                        // 使用OpenAI API将输入文本翻译为SQL查询
+                        console.log("正在生成响应...");
+                        const translatedSQL = await fetchTranslation(prompt, input.value);
+
+                        if (translatedSQL) {
+                            // 更新输出文本区域的翻译后的SQL查询
+                            output.value = translatedSQL;
+                        }
+                    }
+                }
+
+                // 定期检查modeToggle状态
+                setInterval(checkModeToggle, 500); // 根据需要调整间隔时间（以毫秒为单位）
+
+                function checkModeToggle() {
+                    var actionButton = document.getElementById("actionButton");
+
+                    if (modeToggle.checked) {
+                        void actionButton.offsetWidth; // 触发重绘以重新开始过渡动画
+                        actionButton.innerHTML = "解释";
+                    } else {
+                        void actionButton.offsetWidth; // 触发重绘以重新开始过渡动画
+                        actionButton.innerHTML = "NL2SQL";
+                    }
+                }
+            });
+        </script>
+        <script>
+            function updateFileNameLabel() {
+                var fileName = document.getElementById("excel_file").value.split("\\").pop();
+                document.getElementById("file_name_label").innerHTML = fileName;
+            }
+        </script>
 </body>
 
 </html>
