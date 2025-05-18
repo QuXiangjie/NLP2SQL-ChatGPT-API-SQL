@@ -32,4 +32,19 @@ A web-based application that allows users to **upload Excel files**, **ask natur
 git clone https://github.com/yourusername/nlp2sql.git
 cd nlp2sql
 
+npm install
+```
+Create a .env file to manage secrets (optional if hardcoded):
+```bash
+OPENAI_API_KEY=your_openai_key_here
+MONGO_URI=your_mongodb_uri
+PORT=3000
+```
+```bash
+npm start
+```
+
+
+
+
 
