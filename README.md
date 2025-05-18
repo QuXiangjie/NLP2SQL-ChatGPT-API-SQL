@@ -27,6 +27,10 @@ A web-based application that allows users to **upload Excel files**, **ask natur
 
 ---
 
+## Project Structure
+<img width="595" alt="image" src="https://github.com/user-attachments/assets/3f958f93-2341-493d-97ab-19d0208bf85d" />
+
+
 ## Start
 ```bash
 git clone https://github.com/yourusername/nlp2sql.git
@@ -43,25 +47,7 @@ PORT=3000
 ```bash
 npm start
 ```
-project-root/
-│
-├── controllers/ # Business logic
-│ ├── database.js # DB login and SQL execution logic
-│ └── Excel2SQLcontroller.js # Excel upload, display, and GPT interaction
-│
-├── models/ # Mongoose models
-│ ├── ExcelFile.js # Excel file structure
-│ └── SQLQuery.js # SQL query history
-│
-├── public/ # Static assets
-│
-├── routes/ # Route definitions
-│
-├── uploads/ # Uploaded Excel files
-│
-├── views/ # EJS templates for rendering UI
-│
-└── app.js / index.js # Entry point
+
 
 
 
